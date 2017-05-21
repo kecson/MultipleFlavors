@@ -1,0 +1,55 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.3"
+    defaultConfig {
+        applicationId "com.demo.cks.multipleflavors"
+        minSdkVersion 15
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        debug {
+            minifyEnabled false
+
+            buildConfigField "String", "libBuildType", '\"debug\"'
+        }
+        release {
+            buildConfigField "String", "libBuildType", '\"release\"'
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    productFlavors {
+        flavor1 {
+            buildConfigField "String", "libFlavor", '\"libFlavor1\"'
+        }
+        flavor2 {
+            buildConfigField "String", "libFlavor", '\"libFlavor2\"'
+        }
+    }
+}
+
+configurations {
+    flavor1DebugCompile.extendsFrom(debugCompile)
+    flavor1ReleaseCompile.extendsFrom(releaseCompile)
+
+    flavor2DebugCompile.extendsFrom(debugCompile)
+    flavor2ReleaseCompile.extendsFrom(releaseCompile)
+}
+
+
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+
+
+    flavor1DebugCompile project(path: ':lib1', configuration: 'libFlavor1Debug')
+    flavor1ReleaseCompile project(path: ':lib1', configuration: 'libFlavor1Release')
+
+    flavor2DebugCompile project(path: ':lib2', configuration: 'libFlavor2Debug')
+    flavor2ReleaseCompile project(path: ':lib2', configuration: 'libFlavor2Release')
+}
